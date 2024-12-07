@@ -1,3 +1,5 @@
+window.addEventListener("load", () => htmlSelector());
+
 const htmlSelector = () => {
   // detect
   if (document.querySelector("#domHtmlSelector")) {
@@ -58,7 +60,7 @@ const htmlSelector = () => {
       e.stopPropagation();
       e.stopImmediatePropagation();
       resizeHandler();
-      console.log(getFragmentInfo(e.target))
+      console.log(getFragmentInfo(e.target));
     };
     const resizeHandler = () => {
       selectorEl.style.display = "flex";
@@ -75,4 +77,36 @@ const htmlSelector = () => {
   });
 };
 
-window.addEventListener("load", htmlSelector);
+const getFragmentInfo = (target) => {
+  const style = getModifiedStyles(target)
+  console.log(style);
+  const rawHtml = target.innerHTML;
+  return rawHtml;
+};
+
+function getModifiedStyles(element) {
+  // 获取目标元素的计算样式
+  const computedStyle = getComputedStyle(element);
+
+  // 创建一个相同标签的临时元素
+  const tempElement = document.createElement(element.tagName);
+  document.body.appendChild(tempElement);
+
+  // 获取临时元素的默认计算样式
+  const defaultStyle = getComputedStyle(tempElement);
+
+  // 保存经过修改的样式
+  const modifiedStyles = {};
+
+  // 比较两者的样式
+  for (const key of computedStyle) {
+    if (computedStyle[key] !== defaultStyle[key]) {
+      modifiedStyles[key] = computedStyle[key];
+    }
+  }
+
+  // 移除临时元素
+  document.body.removeChild(tempElement);
+
+  return modifiedStyles;
+}
