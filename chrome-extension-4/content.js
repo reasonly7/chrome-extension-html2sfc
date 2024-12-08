@@ -78,10 +78,13 @@ const htmlSelector = () => {
 };
 
 const getFragmentInfo = (target) => {
-  const style = getModifiedStyles(target)
-  console.log(style);
-  const rawHtml = target.innerHTML;
-  return rawHtml;
+  const clonedTarget = target.cloneNode(true);
+  traverseDom(clonedTarget, (node) => {
+    const style = getModifiedStyles(target);
+    Object.assign(node.style, style);
+  });
+
+  return clonedTarget.outerHTML;
 };
 
 function getModifiedStyles(element) {
@@ -89,7 +92,8 @@ function getModifiedStyles(element) {
   const computedStyle = getComputedStyle(element);
 
   // 创建一个相同标签的临时元素
-  const tempElement = document.createElement(element.tagName);
+  const tempElement =
+    cacheElementMap[element.tagName] || document.createElement(element.tagName);
   document.body.appendChild(tempElement);
 
   // 获取临时元素的默认计算样式
@@ -105,8 +109,29 @@ function getModifiedStyles(element) {
     }
   }
 
+  if (!cacheElementMap[element.tagName]) {
+    cacheElementMap[element.tagName] = tempElement;
+  }
   // 移除临时元素
   document.body.removeChild(tempElement);
 
   return modifiedStyles;
 }
+
+const traverseDom = (node, callback) => {
+  // 执行回调函数
+  callback(node);
+
+  // 遇到 svg 元素就跳过
+  if (node.tagName === "SVG") {
+    return;
+  }
+
+  // 遍历子节点
+  const children = node.children; // 仅获取元素子节点（跳过文本和注释节点）
+  for (let i = 0; i < children.length; i++) {
+    traverseDom(children[i], callback); // 递归调用
+  }
+};
+
+const cacheElementMap = {};
