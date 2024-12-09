@@ -1,7 +1,4 @@
-<script lang="ts" setup>
-import { onMounted, ref } from "vue";
-
-const keys = [
+[
   "align-content",
   "align-items",
   "align-self",
@@ -80,6 +77,7 @@ const keys = [
   "grid-row-end",
   "grid-row-gap",
   "grid-row-start",
+  "height",
   "justify-content",
   "justify-items",
   "justify-self",
@@ -133,29 +131,12 @@ const keys = [
   "vertical-align",
   "visibility",
   "white-space",
+  "width",
   "word-break",
   "word-spacing",
   "word-wrap",
   "x",
   "y",
   "z-index",
-  "zoom",
-];
-
-const containerRef = ref<HTMLDivElement | null>(null);
-onMounted(() => {
-  const allStyle = getComputedStyle(containerRef.value!);
-  const res: any = {};
-
-  keys.forEach((key: any) => {
-    res[key] = allStyle[key];
-  });
-  console.log(res);
-});
-</script>
-
-<template>
-  <span ref="containerRef">Hello, World!</span>
-</template>
-
-<style></style>
+  "zoom"
+]
