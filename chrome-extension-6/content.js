@@ -291,8 +291,14 @@ const defaultRules = {
   zoom: "1",
 };
 
-
 const callDashScope = async (rawHtml) => {
-  const res = await fetch(rawHtml).then((res) => res.json());
-  return res
+  const url = "http://localhost:3000/ali-bailian/html2sfc";
+  const res = await fetch(url, {
+    method: "post",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ prompt: rawHtml }),
+  }).then((res) => res.text());
+  return res;
 };
