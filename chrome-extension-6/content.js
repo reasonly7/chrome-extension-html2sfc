@@ -291,26 +291,8 @@ const defaultRules = {
   zoom: "1",
 };
 
-const API_KEY = "sk-27cc93de3f194ea28ed59ad30e22832f";
-const APP_ID = "cca36fc071e14784ba968263c72354da";
 
-const callDashScope = async () => {
-  const url = `https://dashscope.aliyuncs.com/api/v1/apps/${APP_ID}/completion`;
-  const data = {
-    input: {
-      prompt: "你是谁？",
-    },
-    parameters: {},
-    debug: {},
-  };
-  const res = await fetch(url, {
-    method: "post",
-    data,
-    headers: {
-      Authorization: `Bearer ${API_KEY}`,
-      "Content-Type": "application/json",
-    },
-  }).then((res) => res.json());
-  console.log(res);
-  return "nothing";
+const callDashScope = async (rawHtml) => {
+  const res = await fetch(rawHtml).then((res) => res.json());
+  return res
 };
