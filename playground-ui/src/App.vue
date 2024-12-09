@@ -1,48 +1,61 @@
 <script lang="ts" setup></script>
 
 <template>
-  <div class="basic-list-header-info">
-    <span>本周任务平均处理时间</span>
-    <p>32分钟</p>
-    <em></em>
+  <div class="card-body">
+    <h1 class="title">
+      早安，Serati Ma <span class="welcome-text">，祝你开心每一天！</span>
+    </h1>
+    <p class="desc">蚂蚁金服－某某某事业群－某某平台部－某某技术部－UED</p>
   </div>
 </template>
 
 <style lang="less" scoped>
-.basic-list-header-info {
-  width: 241px;
-  height: 58px;
-  position: relative;
-  text-align: center;
+.card-body {
+  border: 0;
+  border-radius: 8px;
+  color: rgba(0, 0, 0, 0.88);
   font-size: 14px;
+  background-color: #27a6fe;
   line-height: 22px;
-  display: block;
+  list-style: none;
+  padding: 24px;
+  text-decoration: none;
+  width: calc(100% - 40px);
+  height: 134px;
+  margin: 20px;
 
-  span {
-    color: rgba(0, 0, 0, 0.65);
-    margin-bottom: 4px;
-    width: 140px;
-    height: 22px;
-    display: inline-block;
-  }
-
-  p {
-    color: rgba(0, 0, 0, 0.88);
+  .title {
+    border: 0;
+    color: #fff;
+    column-rule: 0;
     font-size: 24px;
-    line-height: 32px;
-    width: 100%;
-    height: 32px;
-    display: block;
+    font-weight: 500;
+    line-height: 38px;
+    list-style: none;
+    margin: 0 0 12px;
+    text-decoration: none;
+    width: 1389px;
+    height: 38px;
+
+    .welcome-text {
+      display: inline;
+      font-size: 24px;
+      font-weight: 500;
+      line-height: 38px;
+    }
   }
 
-  em {
-    background: rgba(5, 5, 5, 0.06);
-    position: absolute;
-    top: 2px;
-    right: 0;
-    width: 1px;
-    height: 56px;
-    display: block;
+  .desc {
+    border: 0;
+    color: #fff;
+    column-rule: 0;
+    font-size: 14px;
+    line-height: 22px;
+    list-style: none;
+    margin: 0 0 14px;
+    text-decoration: none;
+    width: 1389px;
+    height: 22px;
   }
 }
 </style>
