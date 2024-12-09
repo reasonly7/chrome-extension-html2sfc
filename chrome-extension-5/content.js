@@ -78,16 +78,32 @@ const htmlSelector = () => {
 };
 
 const getFragmentInfo = (target) => {
+  // clone 的节点没有样式信息，注意这个坑
+  // const clonedTarget = target.cloneNode(true);
+  traverseDom(target, (node) => {
+    const style = getModifiedStyles(node);
+    node.dataset.computedStyle = JSON.stringify(style);
+  });
   const clonedTarget = target.cloneNode(true);
   traverseDom(clonedTarget, (node) => {
-    const style = getModifiedStyles(target);
-    node.style = style;
+    // 移除无用的 vue scope style 属性
+    Object.assign(node.style, JSON.parse(node.dataset.computedStyle || "{}"));
+    Object.keys(node.dataset).forEach((key) => {
+      delete node.dataset[key];
+    });
   });
-
   return clonedTarget.outerHTML;
 };
 
-function getModifiedStyles(element) {
+// const styleObjToStr = (styleObj) => {
+//   const str = "";
+//   Object.keys(styleObj).forEach((key) => {
+//     str += `${key}: ${styleObj[key]};`;
+//   });
+//   return str;
+// };
+
+const getModifiedStyles = (element) => {
   // 获取目标元素的计算样式
   const computedStyle = getComputedStyle(element);
 
@@ -102,14 +118,14 @@ function getModifiedStyles(element) {
   });
 
   // 添加固定的样式规则
-  Object.keys(modifiedStyles, {
+  Object.assign(modifiedStyles, {
     width: computedStyle.width,
     height: computedStyle.height,
     display: computedStyle.display,
   });
 
   return modifiedStyles;
-}
+};
 
 const traverseDom = (node, callback) => {
   // 执行回调函数
