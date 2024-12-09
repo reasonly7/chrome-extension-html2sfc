@@ -2,8 +2,8 @@ import { Injectable } from '@nestjs/common';
 import axios from 'axios';
 
 // 测试用，不要再生产时硬编码到代码中
-const API_KEY = 'sk-27cc93de3f194ea28ed59ad30e22832f';
-const APP_ID = 'cca36fc071e14784ba968263c72354da';
+const API_KEY = 'sk-xxx';
+const APP_ID = 'xxx';
 
 @Injectable()
 export class SfcCodegenService {
