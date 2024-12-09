@@ -6,6 +6,8 @@ const htmlSelector = () => {
     return;
   }
 
+  injectStyle();
+
   // render rounded button
   const selectorEl = document.createElement("div");
   selectorEl.innerHTML = `<svg style="width: 30px; height: 30px;" t="1733379192246" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="4215" width="200" height="200"><path d="M474 152m8 0l60 0q8 0 8 8l0 704q0 8-8 8l-60 0q-8 0-8-8l0-704q0-8 8-8Z" fill="#ffffff" p-id="4216"></path><path d="M168 474m8 0l672 0q8 0 8 8l0 60q0 8-8 8l-672 0q-8 0-8-8l0-60q0-8 8-8Z" fill="#ffffff" p-id="4217"></path></svg>`;
@@ -62,13 +64,29 @@ const htmlSelector = () => {
       e.stopImmediatePropagation();
       resizeHandler();
       const rawHtml = getFragmentInfo(e.target);
-      const len = rawHtml.length
-      const confirmed = window.confirm(`您选中了${len}个字符，大概需要 ${Math.round(len/150)} 秒，确定要转换吗？`);
+      const len = rawHtml.length;
+      const content = `您选中了 ${len} 个字符，大概需要 ${Math.max(
+        Math.round(len / 120),
+        12,
+      )} 秒`;
+      const confirmed = window.confirm(`${content}，确定要转换吗？`);
       if (!confirmed) {
         return;
       }
+      openLoading(content);
       const rawSfc = await callDashScope(rawHtml);
-      console.log(rawSfc);
+      closeLoading(rawSfc);
+      // const flag = window.confirm("复制到粘贴板");
+      // if (flag) {
+      //   copyToClipboard(rawSfc);
+      // }
+      // setTimeout(() => {
+      //   if (success) {
+      //   } else {
+      //     alert("复制失败，请 F12 打开控制台查看输出结果");
+      //   }
+      // }, 800);
+      // console.log(rawSfc);
     };
     const resizeHandler = () => {
       selectorEl.style.display = "flex";
@@ -306,4 +324,129 @@ const callDashScope = async (rawHtml) => {
     body: JSON.stringify({ prompt: rawHtml }),
   }).then((res) => res.text());
   return res;
+};
+
+let timer = null;
+
+const openLoading = (content) => {
+  let mask = document.querySelector("#html2sfc-mask");
+  if (mask) {
+    mask.style.display = "flex";
+  } else {
+    mask = document.createElement("div");
+    mask.id = "html2sfc-mask";
+    Object.assign(mask.style, {
+      width: "100vw",
+      height: "100vh",
+      display: "flex",
+      position: "fixed",
+      left: "0",
+      top: "0",
+      backgroundColor: "rgba(0, 0, 0, 0.5)",
+      alignItems: "center",
+      justifyContent: "center",
+      flexDirection: "column",
+      zIndex: "2147483647",
+    });
+    document.body.appendChild(mask);
+  }
+
+  mask.innerHTML = `
+    <div class="loader"></div>
+    <div class="content">${content}</div>
+    <div class="timer"></div>
+  `;
+
+  let count = 0;
+  const timerEl = document.querySelector("#html2sfc-mask .timer");
+  clearInterval(timer);
+  timer = setInterval(() => {
+    timerEl.innerHTML = `实际耗时：<span style="font-size: 32px; font-weight: bold; font-family: Consolas, monospace;">${count++}</span><span style="font-size: 18px"> s</span>`;
+  }, 1000);
+};
+
+const closeLoading = (text) => {
+  const mask = document.querySelector("#html2sfc-mask");
+  clearInterval(timer);
+
+  if (!mask) {
+    return;
+  }
+  mask.innerHTML = `<div style="color: #ffffff; font-size: 14px;">生成成功！点击 <button class="copy">复制</button> 到粘贴板</div>`;
+  const copyEl = mask.querySelector(".copy");
+  copyEl.onclick = () => {
+    copyToClipboard(text);
+    mask.style.display = "none";
+  };
+};
+
+// 实现 loading 动画时必要的样式
+const injectStyle = () => {
+  const rawStyle = `#html2sfc-mask .loader {
+  width: 50px;
+  aspect-ratio: 1;
+  display: grid;
+  border-radius: 50%;
+  background:
+    linear-gradient(0deg ,rgb(0 0 0/50%) 30%,#0000 0 70%,rgb(0 0 0/100%) 0) 50%/8% 100%,
+    linear-gradient(90deg,rgb(0 0 0/25%) 30%,#0000 0 70%,rgb(0 0 0/75% ) 0) 50%/100% 8%;
+  background-repeat: no-repeat;
+  animation: l23 1s infinite steps(12);
+}
+#html2sfc-mask .loader::before,
+#html2sfc-mask .loader::after {
+   content: "";
+   grid-area: 1/1;
+   border-radius: 50%;
+   background: inherit;
+   opacity: 0.915;
+   transform: rotate(30deg);
+}
+#html2sfc-mask .loader::after {
+   opacity: 0.83;
+   transform: rotate(60deg);
+}
+@keyframes l23 {
+  100% {transform: rotate(1turn)}
+}
+#html2sfc-mask .content {
+  color: #fff;
+  margin-top: 20px;
+  font-size: 14px;
+}
+
+#html2sfc-mask .timer {
+  color: #fff;
+  margin-top: 20px;
+  font-size: 14px;
+}
+
+#html2sfc-mask .copy {
+  font-size: 18px;
+  padding: 6px 12px;
+  cursor: pointer;
+  background: linear-gradient(160deg, rgb(0, 147, 233) 0%, rgb(128, 208, 199) 100%);
+  border: none;
+  border-radius: 4px;
+  color: #fff;
+}
+`;
+  const styleEl = document.createElement("style");
+  styleEl.innerText = rawStyle;
+  document.head.appendChild(styleEl);
+};
+
+const copyToClipboard = (text) => {
+  const textArea = document.createElement("textarea");
+  textArea.value = text;
+  document.body.appendChild(textArea);
+  textArea.select();
+  try {
+    document.execCommand("copy");
+    return true;
+  } catch {
+    return false;
+  } finally {
+    document.body.removeChild(textArea);
+  }
 };
