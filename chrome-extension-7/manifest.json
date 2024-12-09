@@ -1,0 +1,19 @@
+{
+  "manifest_version": 3,
+  "name": "html2sfc",
+  "version": "1.0",
+  "description": "Convert raw html to Single File Component(SFC).",
+  "permissions": [],
+  "host_permissions": ["<all_urls>"],
+  "icons": {
+    "16": "avatar.png",
+    "48": "avatar.png",
+    "128": "avatar.png"
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content.js"]
+    }
+  ]
+}
