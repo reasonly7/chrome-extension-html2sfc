@@ -81,11 +81,19 @@ const getFragmentInfo = (target) => {
   // clone 的节点没有样式信息，注意这个坑
   // const clonedTarget = target.cloneNode(true);
   traverseDom(target, (node) => {
+    // 遇到 svg 元素就跳过
+    if (node.parentElement?.tagName === "svg") {
+      return true;
+    }
     const style = getModifiedStyles(node);
     node.dataset.computedStyle = JSON.stringify(style);
   });
   const clonedTarget = target.cloneNode(true);
   traverseDom(clonedTarget, (node) => {
+    // 遇到 svg 元素就跳过
+    if (node.parentElement?.tagName === "svg") {
+      return true;
+    }
     // 移除无用的 vue scope style 属性
     Object.assign(node.style, JSON.parse(node.dataset.computedStyle || "{}"));
     Object.keys(node.dataset).forEach((key) => {
@@ -129,10 +137,8 @@ const getModifiedStyles = (element) => {
 
 const traverseDom = (node, callback) => {
   // 执行回调函数
-  callback(node);
-
-  // 遇到 svg 元素就跳过
-  if (node.tagName === "SVG") {
+  const flag = callback(node);
+  if (flag) {
     return;
   }
 
