@@ -191,7 +191,6 @@ const defaultRules = {
   "border-width": "0px",
   bottom: "auto",
   "box-shadow": "none",
-  "box-sizing": "content-box",
   clear: "none",
   color: "rgb(0, 0, 0)",
   "column-count": "auto",
