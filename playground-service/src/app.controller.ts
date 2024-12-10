@@ -18,4 +18,10 @@ export class AppController {
   html2sfc(@Body('prompt') prompt: string) {
     return this.sfcCodegenService.html2sfc(prompt);
   }
+
+  @Post('/ali-bailian/translator')
+  translator(@Body('prompt') prompt: string) {
+    const data = this.sfcCodegenService.translator(prompt);
+    return { data };
+  }
 }
