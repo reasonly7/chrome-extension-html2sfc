@@ -20,8 +20,8 @@ export class AppController {
   }
 
   @Post('/ali-bailian/translator')
-  translator(@Body('prompt') prompt: string) {
-    const data = this.sfcCodegenService.translator(prompt);
+  async translator(@Body('prompt') prompt: string) {
+    const data = await this.sfcCodegenService.translator(prompt);
     return { data };
   }
 }
