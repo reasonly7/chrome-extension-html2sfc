@@ -2,13 +2,12 @@ import { Injectable } from '@nestjs/common';
 import axios from 'axios';
 
 // 测试用，不要再生产时硬编码到代码中
-const API_KEY = 'sk-af2f1bc2f70f434091558573e6e766df	';
-const APP_ID = '1949810e1ab24e70a028fbbc4c089f7c';
+const API_KEY = 'sk-7ca572acd89f47228771435077beac75';
 
 @Injectable()
 export class SfcCodegenService {
   async html2sfc(prompt: string): Promise<string> {
-    const url = `https://dashscope.aliyuncs.com/api/v1/apps/${APP_ID}/completion`;
+    const url = `https://dashscope.aliyuncs.com/api/v1/apps/cca36fc071e14784ba968263c72354da/completion`;
     const data = {
       input: { prompt },
       parameters: {},
@@ -44,7 +43,7 @@ export class SfcCodegenService {
   }
 
   async translator(prompt: string): Promise<string> {
-    const url = `https://dashscope.aliyuncs.com/api/v1/apps/${APP_ID}/completion`;
+    const url = `https://dashscope.aliyuncs.com/api/v1/apps/1949810e1ab24e70a028fbbc4c089f7c/completion`;
     const data = {
       input: { prompt },
       parameters: {},
